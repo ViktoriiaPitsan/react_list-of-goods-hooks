@@ -20,17 +20,16 @@ enum SortType {
   None = 'none',
   Alphabetical = 'alphabetical',
   Length = 'length',
-  Reverse = 'reverse',
 }
 
 type GoodsSortParams = {
   sortField: SortType;
-  reversed: boolean;
+  isReversed: boolean;
 };
 
 function getPreparedGoods(
   goods: string[],
-  { sortField, reversed }: GoodsSortParams,
+  { sortField, isReversed }: GoodsSortParams,
 ) {
   const preparedGoods = [...goods];
 
@@ -47,7 +46,7 @@ function getPreparedGoods(
     });
   }
 
-  if (reversed) {
+  if (isReversed) {
     preparedGoods.reverse();
   }
 
@@ -56,21 +55,21 @@ function getPreparedGoods(
 
 export const App = () => {
   const [sortField, setSortField] = useState<SortType>(SortType.None);
-  const [reversed, setReversed] = useState<boolean>(false);
-  const [initialGoods] = useState(goodsFromServer);
+  const [isReversed, setIsReversed] = useState<boolean>(false);
 
-  const visibleGoods = getPreparedGoods(initialGoods, { sortField, reversed });
+  const visibleGoods = getPreparedGoods(goodsFromServer, {
+    sortField,
+    isReversed,
+  });
 
-  const isDifferent = !initialGoods.every(
-    (good, i) => good === visibleGoods[i],
-  );
+  const isResetButtonVisible = sortField !== SortType.None || isReversed;
 
   const handleSortAlphabetically = () => setSortField(SortType.Alphabetical);
   const handleSortByLength = () => setSortField(SortType.Length);
-  const handleReverse = () => setReversed(prev => !prev);
+  const handleReverse = () => setIsReversed(prev => !prev);
   const handleReset = () => {
     setSortField(SortType.None);
-    setReversed(false);
+    setIsReversed(false);
   };
 
   return (
@@ -100,13 +99,13 @@ export const App = () => {
           type="button"
           onClick={handleReverse}
           className={cn('button', 'is-warning', {
-            'is-light': !reversed,
+            'is-light': !isReversed,
           })}
         >
           Reverse
         </button>
 
-        {isDifferent && (
+        {isResetButtonVisible && (
           <button
             type="button"
             onClick={handleReset}
