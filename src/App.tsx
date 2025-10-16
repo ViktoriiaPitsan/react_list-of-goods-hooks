@@ -20,7 +20,6 @@ enum SortType {
   None = 'none',
   Alphabetical = 'alphabetical',
   Length = 'length',
-  Reverse = 'reverse',
 }
 
 type GoodsSortParams = {
